@@ -36,7 +36,8 @@
           <input
             type="text"
             id="autocomplete"
-            class="input-error input-xxlarge"
+            class="input-error input-xxlarge" 
+            v-model="keyword"
           />
           <button class="sui-btn btn-xlarge btn-danger" type="button" @click="goSearch">
             搜索
@@ -50,10 +51,38 @@
 <script>
 export default {
     name:'Header',
+    data() {
+      return {
+        keyword: '' // 搜索关键词
+      }
+    },
     methods: {
         // 编程式导航，跳转到搜索页面
         goSearch(){
-            this.$router.push('/search')
+          // 路由传递参数
+          // 【1】字符串形式
+          // this.$router.push('/search/' + this.keyword)
+          //【2】模板字符串形式
+          // this.$router.push(`/search/${this.keyword}`)
+          //【3】对象形式： params需要给路由取一个名字，query参数可以直接使用路由
+          this.$router.push({
+              path:'/search',
+              query:{
+                keyword: this.keyword || undefined
+              }
+          })
+          // NavigaatationDuplicated错误
+          // 1、编程时导航可以给push传递成功和失败的回调函数
+          // 2、重写push和replace方法
+
+           // params参数必须使用路由命名，不能使用path
+          //   this.$router.push({
+          //     name:'SearchName',
+          //     params:{
+          //       keyword: this.keyword
+          //     }
+          // })
+          // 如果传递的是空串，使用undefined解决
         }
     },
 };

@@ -1,9 +1,12 @@
 <template>
   <div>
-    <Header/>
-<!-- 书写路由组件出口的地方 -->
-      <router-view></router-view>
-    <Footer/>
+    <Header />
+    <!-- 书写路由组件出口的地方 -->
+    <router-view></router-view>
+    <!-- 在Home Search时是显示的，在登录、注册时时隐藏的 -->
+    <!-- <Footer v-show="$route.path=='/home' || $route.path=='/search'"/> -->
+    <!-- 使用路由元信息 -->
+    <Footer v-show="$route.meta.isFooterShow"/>
   </div>
 </template>
 
