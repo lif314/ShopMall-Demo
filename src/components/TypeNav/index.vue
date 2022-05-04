@@ -6,7 +6,8 @@
       <div @mouseleave="leaveIndex">
         <h2 class="all">全部商品分类</h2>
         <div class="sort">
-          <div class="all-sort-list2">
+          <!-- 事件委派 -->
+          <div class="all-sort-list2" @click="goSearch">
             <div
               class="item"
               v-for="(c1, index) in categoryList"
@@ -14,7 +15,14 @@
               :class="{ cur: currentIndex == index }"
             >
               <h3 @mouseenter="changeIndex(index)">
-                <a href="">{{ c1.categoryName }}</a>
+                <!-- 会创建多个事件回调 -->
+                <a
+                  :data-categoryName="c1.categoryName"
+                  :data-category1Id="c1.categoryId"
+                  >{{ c1.categoryName }}</a
+                >
+                <!-- router-link 会出现卡顿现象：创建组件然后解析，很耗内存 -->
+                <!-- <router-link to="/search">{{ c1.categoryName }}</router-link> -->
               </h3>
               <!-- 二、三级分类 -->
               <div
@@ -28,11 +36,21 @@
                 >
                   <dl class="fore">
                     <dt>
-                      <a href="">{{ c2.categoryName }}</a>
+                      <a
+                        :data-categoryName="c2.categoryName"
+                        :data-category2Id="c2.categoryId"
+                        >{{ c2.categoryName }}</a
+                      >
+                      <!-- <router-link to="/search">{{ c2.categoryName }}</router-link> -->
                     </dt>
                     <dd>
                       <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
-                        <a href="">{{ c3.categoryName }}</a>
+                        <a
+                          :data-categoryName="c3.categoryName"
+                          :data-category3Id="c3.categoryId"
+                          >{{ c3.categoryName }}</a
+                        >
+                        <!-- <router-link to="/search">{{ c3.categoryName }}</router-link> -->
                       </em>
                     </dd>
                   </dl>
@@ -59,7 +77,7 @@
 <script>
 // 从state中获取数据
 import { mapState } from "vuex";
-import throttle from 'lodash/throttle';  // 防抖与节流
+import throttle from "lodash/throttle"; // 防抖与节流
 
 export default {
   name: "TypeNav",
@@ -70,22 +88,46 @@ export default {
     };
   },
   methods: {
+    // 路由跳转：事件委派+编程式路由
+    // 事件委派：子节点dt em等委托给父节点
+    goSearch(event) {
+      // 给a标签添加自定义属性
+      // 获取当前触发事件的节点 event
+      let element = event.target;
+      // 节点有一个dataset属性，可以获取节点的自定义属性
+      let { categoryname, category1id, category2id, category13id } =
+        element.dataset;
+      if (categoryname) {
+        let location = { name: "search" };
+        let query = { categoryname: categoryname };
+        if (category1id) {
+          query.category1id = category1id;
+        } else if (category2id) {
+          query.category2id = category2id;
+        } else {
+          query.category13id = category13id;
+        }
+        // 发送，路由跳转
+        location.query = query;
+        this.$router.push(location)
+      }
+    },
     // changeIndex(index) {
-      // 获取当前的元素
-      // 正常情况下(用户慢慢的操作):鼠标进入，每一个一级分类都会触发鼠标事件
-      // 非正常情况下(用户操作很快)：本身全部的一级分类都应该触发鼠标事件，但是经过测试，只有部分触发了
-      // 有可能出现卡顿现象
-      // 函数的节流与防抖
-      /**
-       * 节流：在规定的间隔时间范围内不会重复触发回调，只有大于这个时间间隔才会触发回调，把频繁触发变为少量触发
-      *  防抖：前面的所有的触发都被取消，最后一次执行在规定的时间之后才会触发，也就是说如果连续快速的触发·只会执行一次
-      * 
-      * lodash.js插件 防抖与节流
-       */
-      // this.currentIndex = index;
+    // 获取当前的元素
+    // 正常情况下(用户慢慢的操作):鼠标进入，每一个一级分类都会触发鼠标事件
+    // 非正常情况下(用户操作很快)：本身全部的一级分类都应该触发鼠标事件，但是经过测试，只有部分触发了
+    // 有可能出现卡顿现象
+    // 函数的节流与防抖
+    /**
+     * 节流：在规定的间隔时间范围内不会重复触发回调，只有大于这个时间间隔才会触发回调，把频繁触发变为少量触发
+     *  防抖：前面的所有的触发都被取消，最后一次执行在规定的时间之后才会触发，也就是说如果连续快速的触发·只会执行一次
+     *
+     * lodash.js插件 防抖与节流
+     */
+    // this.currentIndex = index;
     // },
     // ES5的写法 throttle不要使用箭头函数
-    changeIndex:throttle(function(index){
+    changeIndex: throttle(function (index) {
       this.currentIndex = index;
     }, 50),
     // 鼠标移除

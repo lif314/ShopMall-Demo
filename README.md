@@ -1,21 +1,7 @@
 # xiaoji-smart-mall
+- CORS
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
+## 三级分类
+- 函数防抖与节流
+- 路由跳转与传参
+- 声明式导航很好内存，需要创建组件实例：事件委派+编程式导航(自定义属性[html不区分大小写， 注意属性名])
