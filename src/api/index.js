@@ -16,4 +16,4 @@ export const getBaseCategoryList = ()=>{
 export const reqGetBannerList = ()=>mockRequests.get('/banner')
 
 // mock获取模拟数据 拦截ajax请求
-export const reqGetFloorrList = ()=>mockRequests.get('/floor')
+export const reqGetFloorList = ()=>mockRequests.get('/floor')

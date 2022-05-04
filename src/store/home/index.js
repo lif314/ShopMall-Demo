@@ -1,6 +1,6 @@
 // home模块的仓库
 
-import { getBaseCategoryList, reqGetBannerList} from "@/api"
+import { getBaseCategoryList, reqGetBannerList, reqGetFloorList} from "@/api"
 
 // action: 处理action，可以书写业务逻辑，处理异步
 const actions = {
@@ -17,6 +17,12 @@ const actions = {
         let res = await reqGetBannerList();
         // console.log(res)
         commit('BANNER_LIST', res.data)
+    },
+    // 获取Floor图书
+    async getFloorList({commit}){
+        let res = await reqGetFloorList();
+        // console.log(res)
+        commit('FLOOR_LIST', res.data)
     }
 }
 
@@ -29,6 +35,10 @@ const mutations = {
     // 轮播图
     BANNER_LIST(state, bannerList){
         state.bannerList = bannerList
+    },
+    // Floor数据
+    FLOOR_LIST(state, floorList){
+        state.floorList = floorList
     }
 }
 
@@ -42,7 +52,8 @@ const getters = {
 // state: 仓库存储数据
 const state = {
     categoryList: [],
-    bannerList: []
+    bannerList: [],
+    floorList: []
 }
 
 

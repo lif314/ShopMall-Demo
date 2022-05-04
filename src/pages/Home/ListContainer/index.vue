@@ -4,7 +4,7 @@
     <div class="sortList clearfix">
       <div class="center">
         <!--banner轮播 Swiper-->
-        <div class="swiper-container" id="mySwiper">
+        <div class="swiper-container" ref="mySwiper">
           <div class="swiper-wrapper">
             <div class="swiper-slide" v-for="b in bannerList" :key="b.id">
               <img :src="b.imgUrl" />
@@ -147,8 +147,10 @@ export default {
         // 所以使用nextTick保证v-for已经解析完成
         // nextTick: 修改数据之后，循环结束之后。下次DOM更新，即v-for已经结束了，然后回调该函数
         this.$nextTick(() => {
+          // document.querySelector(".swiper-container")
+          // Vue中使用ref获取DOM节点
           var mySwiper = new Swiper(
-            document.querySelector(".swiper-container"),
+            this.$refs.mySwiper,
             {
               loop: true,
               // 如果需要分页器
