@@ -2,7 +2,46 @@
   <!-- 商品分类导航 -->
   <div class="type-nav">
     <div class="container">
-      <h2 class="all">全部商品分类</h2>
+      <!-- 事件委派 -->
+      <div @mouseleave="leaveIndex">
+        <h2 class="all">全部商品分类</h2>
+        <div class="sort">
+          <div class="all-sort-list2">
+            <div
+              class="item"
+              v-for="(c1, index) in categoryList"
+              :key="c1.categoryId"
+              :class="{ cur: currentIndex == index }"
+            >
+              <h3 @mouseenter="changeIndex(index)">
+                <a href="">{{ c1.categoryName }}</a>
+              </h3>
+              <!-- 二、三级分类 -->
+              <div
+                class="item-list clearfix"
+                :style="{ display: currentIndex == index ? 'block' : 'none' }"
+              >
+                <div
+                  class="subitem"
+                  v-for="c2 in c1.categoryChild"
+                  :key="c2.categoryId"
+                >
+                  <dl class="fore">
+                    <dt>
+                      <a href="">{{ c2.categoryName }}</a>
+                    </dt>
+                    <dd>
+                      <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
+                        <a href="">{{ c3.categoryName }}</a>
+                      </em>
+                    </dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <nav class="nav">
         <a href="###">服装城</a>
         <a href="###">美妆馆</a>
@@ -13,29 +52,6 @@
         <a href="###">有趣</a>
         <a href="###">秒杀</a>
       </nav>
-      <div class="sort">
-        <div class="all-sort-list2">
-          <div class="item" v-for="c1 in categoryList" :key="c1.categoryId">
-            <h3>
-              <a href="">{{c1.categoryName}}</a>
-            </h3>
-            <div class="item-list clearfix">
-              <div class="subitem" v-for="c2 in c1.categoryChild" :key="c2.categoryId">
-                <dl class="fore">
-                  <dt>
-                    <a href="">{{c2.categoryName}}</a>
-                  </dt>
-                  <dd>
-                    <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
-                      <a href="">{{c2.categoryName}}</a>
-                    </em>
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -43,9 +59,40 @@
 <script>
 // 从state中获取数据
 import { mapState } from "vuex";
+import throttle from 'lodash/throttle';  // 防抖与节流
 
 export default {
   name: "TypeNav",
+  data() {
+    return {
+      // 给一级分类添加点击效果
+      currentIndex: -1,
+    };
+  },
+  methods: {
+    // changeIndex(index) {
+      // 获取当前的元素
+      // 正常情况下(用户慢慢的操作):鼠标进入，每一个一级分类都会触发鼠标事件
+      // 非正常情况下(用户操作很快)：本身全部的一级分类都应该触发鼠标事件，但是经过测试，只有部分触发了
+      // 有可能出现卡顿现象
+      // 函数的节流与防抖
+      /**
+       * 节流：在规定的间隔时间范围内不会重复触发回调，只有大于这个时间间隔才会触发回调，把频繁触发变为少量触发
+      *  防抖：前面的所有的触发都被取消，最后一次执行在规定的时间之后才会触发，也就是说如果连续快速的触发·只会执行一次
+      * 
+      * lodash.js插件 防抖与节流
+       */
+      // this.currentIndex = index;
+    // },
+    // ES5的写法 throttle不要使用箭头函数
+    changeIndex:throttle(function(index){
+      this.currentIndex = index;
+    }, 50),
+    // 鼠标移除
+    leaveIndex() {
+      this.currentIndex = -1;
+    },
+  },
   // 组件挂在完毕获取数据，存储在仓库中
   mounted() {
     this.$store.dispatch("categoryList");
@@ -173,11 +220,15 @@ export default {
             }
           }
 
-          &:hover {
-            .item-list {
-              display: block;
-            }
-          }
+          // &:hover {
+          //   .item-list {
+          //     display: block;
+          //   }
+          // }
+        }
+
+        .cur {
+          background-color: skyblue;
         }
       }
     }
