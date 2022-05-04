@@ -3,6 +3,10 @@ import App from './App.vue'
 // 将三级分类注册为全局组件
 import TypeNav from './components/TypeNav'
 Vue.component(TypeNav.name, TypeNav)
+// 将轮播图注册为全局组件
+import Carousel from './components/Carousel'
+Vue.component(Carousel.name, Carousel)
+
 // 引入路由
 import router from '@/router'
 //引入MockServer.js----mock数据

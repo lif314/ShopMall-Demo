@@ -7,7 +7,7 @@
         <Recommend/>
         <Rank/>
         <Like/>
-        <Floor v-for="floor in floorList" :key="floor.id" :list="floor"/>
+        <Floor v-for="floor in homeFloorList" :key="floor.id" :list="floor"/>
         <Brand/>
     </div>
 </template>
@@ -39,7 +39,7 @@ export default {
     },
     computed:{
         ...mapState({
-            floorList: state=>state.home.floorList
+            homeFloorList: state=>state.home.floorList
         })
     }
 }

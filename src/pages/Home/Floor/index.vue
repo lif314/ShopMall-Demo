@@ -6,8 +6,12 @@
         <h3 class="fl">{{ list.name }}</h3>
         <div class="fr">
           <ul class="nav-tabs clearfix">
-            <li class="active" v-for="(nav,index) in list.navList" :key="index">
-              <a href="#tab1" data-toggle="tab">{{nav.text}}</a>
+            <li
+              class="active"
+              v-for="(nav, index) in list.navList"
+              :key="index"
+            >
+              <a href="#tab1" data-toggle="tab">{{ nav.text }}</a>
             </li>
           </ul>
         </div>
@@ -23,21 +27,9 @@
               </ul>
               <img :src="list.imgUrl" />
             </div>
-            <!-- 轮播图 -->
             <div class="floorBanner">
-              <div class="swiper-container" ref="floor1Swiper">
-                <div class="swiper-wrapper">
-                  <div class="swiper-slide" v-for="carousel in list.carouselList" :key="carousel.id">
-                    <img :src="carousel.imgUrl" />
-                  </div>
-                </div>
-                <!-- 如果需要分页器 -->
-                <div class="swiper-pagination"></div>
-
-                <!-- 如果需要导航按钮 -->
-                <div class="swiper-button-prev"></div>
-                <div class="swiper-button-next"></div>
-              </div>
+                <!-- 轮播图 -->
+              <Carousel :list="list.carouselList"/>
             </div>
             <div class="split">
               <span class="floor-x-line"></span>
@@ -57,7 +49,7 @@
                 <img :src="list.recommendList[2]" />
               </div>
               <div class="floor-conver-pit">
-                <img :src="list.recommendList[3]"/>
+                <img :src="list.recommendList[3]" />
               </div>
             </div>
           </div>
@@ -74,24 +66,53 @@ import Swiper from "swiper";
 export default {
   name: "Floor",
   props: ["list"],
-  mounted() {
-    // 因为list是传进来的参数，所以只有list页面结构已经渲染完成才会
-    // 创建DOM结构。即先有数据才去渲染
-    // 组件内部没有发送请求
-    var mySwiper = new Swiper(this.$refs.floor1Swiper, {
-            loop: true,
-            // 如果需要分页器
-            pagination: {
-              el: ".swiper-pagination",
-              clickable: true,
-            },
-            // 如果需要前进后退按钮
-            navigation: {
-              nextEl: ".swiper-button-next",
-              prevEl: ".swiper-button-prev",
-            },
-          });
-  },
+  // mounted() {
+  //   // 因为list是传进来的参数，所以只有list页面结构已经渲染完成才会
+  //   // 创建DOM结构。即先有数据才去渲染
+  //   // 组件内部没有发送请求
+
+  //   // 为了封装为组件，保证js代码与list-container中式一样的，所以也写在watch中
+  //   var mySwiper = new Swiper(this.$refs.floor1Swiper, {
+  //           loop: true,
+  //           // 如果需要分页器
+  //           pagination: {
+  //             el: ".swiper-pagination",
+  //             clickable: true,
+  //           },
+  //           // 如果需要前进后退按钮
+  //           navigation: {
+  //             nextEl: ".swiper-button-next",
+  //             prevEl: ".swiper-button-prev",
+  //           },
+  //         });
+  // },
+  // watch: {
+  //   list: {
+  //     // 由于list是来自父组件，所以数据不后悔发生改变。
+  //     // 配置immediate属性启动立即监听，不管数据是否改变
+  //     immediate: true,
+  //     handler() {
+  //       // 能够监听到数据但不能保证数据DOM已经渲染完成
+  //       this.$nextTick(() => {
+  //         // document.querySelector(".swiper-container")
+  //         // Vue中使用ref获取DOM节点
+  //         var mySwiper = new Swiper(this.$refs.floor1Swiper, {
+  //           loop: true,
+  //           // 如果需要分页器
+  //           pagination: {
+  //             el: ".swiper-pagination",
+  //             clickable: true,
+  //           },
+  //           // 如果需要前进后退按钮
+  //           navigation: {
+  //             nextEl: ".swiper-button-next",
+  //             prevEl: ".swiper-button-prev",
+  //           },
+  //         });
+  //       });
+  //     },
+  //   },
+  // },
 };
 </script>
 
