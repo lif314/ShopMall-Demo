@@ -67,9 +67,9 @@ export default new VueRouter({
         },
         {
             // name: 'Search', // params传递参数必须使用名字
-            // path: '/search/:keyword?', // params传递参数需要进行占位, ?表示可传可不传
+            path: '/search/:keyword?', // params传递参数需要进行占位, ?表示可传可不传
             name: 'search',
-            path: '/search', // params传递参数需要进行占位, ?表示可传可不传
+            // path: '/search', // params传递参数需要进行占位, ?表示可传可不传
             component: Search,
             meta:{
                 isFooterShow: true  // 显示Footer组件
