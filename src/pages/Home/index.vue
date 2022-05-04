@@ -23,7 +23,7 @@ import Floor from './Floor'
 import Brand from './Brand'
 
 export default {
-    name: 'demo',
+    name: 'Home',
     components:{
         ListContainer,
         Recommend,

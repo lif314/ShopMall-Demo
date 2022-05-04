@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 // 将三级分类注册为全局组件
-import TypeNav from './pages/Home/TypeNav'
+import TypeNav from './components/TypeNav'
 Vue.component(TypeNav.name, TypeNav)
 // 引入路由
 import router from '@/router'
