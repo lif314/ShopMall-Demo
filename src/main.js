@@ -5,11 +5,10 @@ import TypeNav from './components/TypeNav'
 Vue.component(TypeNav.name, TypeNav)
 // 引入路由
 import router from '@/router'
-
-// 测试
-// import {getBaseCategoryList} from '@/api/index'
-
-// console.log(getBaseCategoryList())
+//引入MockServer.js----mock数据
+import "@/mock/mockServe";
+// 引入Swiper 轮播图
+import 'swiper/css/swiper.css';
 
 // 使用vuex
 import store from '@/store'

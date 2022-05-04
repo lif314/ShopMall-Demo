@@ -3,11 +3,11 @@
   <div class="list-container">
     <div class="sortList clearfix">
       <div class="center">
-        <!--banner轮播-->
+        <!--banner轮播 Swiper-->
         <div class="swiper-container" id="mySwiper">
           <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <img src="./images/banner1.jpg" />
+            <div class="swiper-slide" v-for="b in bannerList" :key="b.id">
+              <img :src="b.imgUrl" />
             </div>
           </div>
           <!-- 如果需要分页器 -->
@@ -92,8 +92,86 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+import Swiper from "swiper";
 export default {
-    name: 'ListContainer'
+  name: "ListContainer",
+  mounted() {
+    // 派发actiion，从mock中获取模拟数据
+    // 转移到App中,只需要请求一次
+    this.$store.dispatch("getBannerList");
+
+    // 不能在挂在的时候初始化Swiper实例，因为此时轮播图数据还不完整，v-for遍历的数据可能时
+    // 空的或者是错误的  --- 可以在mouted添加一个定时器 2s，等组件ok再初始化实例
+    // DOM已经完善才能使用mouted
+    // setTimeout(()=>{
+    //   var mySwiper = new Swiper(document.querySelector(".swiper-container"),{
+    //     loop: true,
+    //     // 如果需要分页器
+    //     pagination:{
+    //       el:'.swiper-pagination',
+    //       clickable: true
+    //     },
+    //     // 如果需要前进后退按钮
+    //     navigation:{
+    //       nextEl: ".swiper-button-next",
+    //       prevEl:".swiper-button-prev"
+    //     },
+    //   });
+    // }, 2000)
+  },
+  // updated() {
+  //   // 在updated中使用轮播图Swiper实例化
+  //   var mySwiper = new Swiper(document.querySelector(".swiper-container"),{
+  //       loop: true,
+  //       // 如果需要分页器
+  //       pagination:{
+  //         el:'.swiper-pagination',
+  //         clickable: true
+  //       },
+  //       // 如果需要前进后退按钮
+  //       navigation:{
+  //         nextEl: ".swiper-button-next",
+  //         prevEl:".swiper-button-prev"
+  //       },
+  //     });
+  // },
+  // 轮播图最终解决方案：watch监听数据变化
+  watch: {
+    // 监听bannerList数据变化
+    bannerList: {
+      // 执行handler说明banner中数据以及那个发生了变化 ，即已经存在数据
+      handler(newValue, oldValue) {
+        // bannerList已经存在数据的请款下，再初始化Swiper实例
+        // 但此时依然无法保证v-for数据解析完整，DOM结构完善
+        // 所以使用nextTick保证v-for已经解析完成
+        // nextTick: 修改数据之后，循环结束之后。下次DOM更新，即v-for已经结束了，然后回调该函数
+        this.$nextTick(() => {
+          var mySwiper = new Swiper(
+            document.querySelector(".swiper-container"),
+            {
+              loop: true,
+              // 如果需要分页器
+              pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+              },
+              // 如果需要前进后退按钮
+              navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+              },
+            }
+          );
+        });
+      },
+    },
+  },
+  computed: {
+    ...mapState({
+      bannerList: (state) => state.home.bannerList,
+    }),
+  },
 };
 </script>
 

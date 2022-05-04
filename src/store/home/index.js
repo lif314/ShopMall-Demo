@@ -1,6 +1,6 @@
 // home模块的仓库
 
-import { getBaseCategoryList } from "@/api"
+import { getBaseCategoryList, reqGetBannerList} from "@/api"
 
 // action: 处理action，可以书写业务逻辑，处理异步
 const actions = {
@@ -11,13 +11,24 @@ const actions = {
         if(res.code == 200){
             commit('CATEGORY_LIST', res.data);
         }
+    },
+    // 获取轮播图数据
+   async getBannerList({commit}){
+        let res = await reqGetBannerList();
+        // console.log(res)
+        commit('BANNER_LIST', res.data)
     }
 }
 
 // mutations: 修改state的唯一手段
 const mutations = {
+    // 三级分类
     CATEGORY_LIST(state, categoryList){
         state.categoryList = categoryList
+    },
+    // 轮播图
+    BANNER_LIST(state, bannerList){
+        state.bannerList = bannerList
     }
 }
 
@@ -30,7 +41,8 @@ const getters = {
 
 // state: 仓库存储数据
 const state = {
-    categoryList: []
+    categoryList: [],
+    bannerList: []
 }
 
 

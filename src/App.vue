@@ -23,6 +23,8 @@ export default {
   mounted() {
     // this就是vm  数据请求放在App中，根组件指挥执行一次，之后所有数据从仓库中拿
     this.$store.dispatch("categoryList");
+    // 获取首页轮播图
+    // this.$store.dispatch('getBannerList');
   },
 };
 </script>
