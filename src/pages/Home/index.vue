@@ -3,7 +3,7 @@
         <!-- 全局组件 -->
         <TypeNav></TypeNav>
         <!-- 轮播图组件 -->
-         <ListContainer></ListContainer>
+        <ListContainer></ListContainer>
         <Recommend/>
         <Rank/>
         <Like/>

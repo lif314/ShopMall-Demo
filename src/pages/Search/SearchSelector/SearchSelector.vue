@@ -5,7 +5,7 @@
       <div class="fl key brand">品牌</div>
       <div class="value logos">
         <ul class="logo-list">
-          <li v-for="trademark in trademarkList" :key="trademark.tmId">{{trademark.tmName}}</li>
+          <li v-for="trademark in trademarkList" :key="trademark.tmId"  @click="tradeMarkHandler(trademark)">{{trademark.tmName}}</li>
           <!-- <li><img src="./images/phone06.png" /></li>
           <li><img src="./images/phone07.png" /></li>
           <li><img src="./images/phone08.png" /></li>
@@ -48,7 +48,16 @@ import {mapGetters} from 'vuex'
     name: 'SearchSelector',
     computed:{
       ...mapGetters(["attrsList", "trademarkList"])
-    }
+    },
+    methods: {
+      // 品牌事件处理函数
+      tradeMarkHandler(trademark){
+        // 需要整理参数。向服务器发送请求 ==> 需要在父组件发送请求
+        // 因为父组件中params参数是带给服务器的参数
+        // 使用自定义事件
+        this.$emit('trademarkInfo', trademark)
+      }
+    },
   }
 
 </script>

@@ -22,5 +22,9 @@ Vue.config.productionTip = false
 new Vue({
   render: h => h(App),
   router:router, // 注册路由
-  store   //注册仓库  $store
+  store,   //注册仓库  $store
+  beforeCreate(){
+    // 配置全局事件总线
+    Vue.prototype.$bus = this;
+  }
 }).$mount('#app')

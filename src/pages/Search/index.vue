@@ -11,15 +11,21 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <!-- 分类面包屑 -->
+            <li class="with-x" v-if="searchParams.categoryName">
+              {{ searchParams.categoryName
+              }}<i @click="removeCategoryName">x</i>
+            </li>
+            <!-- 关键字面包屑 -->
+            <li class="with-x" v-if="searchParams.keyword">
+              {{ searchParams.keyword }}<i @click="removeKeyword">x</i>
+            </li>
+            <!-- 品牌面包屑 -->
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector />
+        <SearchSelector @trademarkInfo="trademarkInfo"/>
 
         <!--details-->
         <div class="details clearfix">
@@ -161,7 +167,8 @@ export default {
   beforeMount() {
     // 发请求之前获取参数数据
     // ES6合并对象
-    Object.assign(this.searchParams, this.$route.query, this.$route.params)
+    Object.assign(this.searchParams, this.$route.query, this.$route.params);
+    // console.log(this.searchParams)
   },
   mounted() {
     // 组件挂载完毕，mounted中只会查询一次
@@ -175,6 +182,56 @@ export default {
     // 获取搜索数据
     getSearchData() {
       this.$store.dispatch("getSearchList", this.searchParams);
+    },
+    // 面包屑清除
+    removeCategoryName() {
+      this.searchParams.categoryName = undefined;
+      // 还需要发送请求
+      this.getSearchData();
+      this.searchParams.category1Id = undefined; // undefined的数据不会传送给服务器
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
+      // 修改地址栏：进行路由跳转
+      // 面包屑是query参数，关键词是prams参数，所以可以把params参数加上
+      if (this.$route.params) {
+        this.$router.push({ name: "search", params: this.$route.params });
+      }
+    },
+    // 关键字面包屑清除
+    removeKeyword() {
+      this.searchParams.keyword = undefined;
+      // 文本框中关键字置空  Header和Search组件：兄弟组件通信
+      // 再次发送请求
+      this.getSearchData();
+      // 触发事件
+      this.$bus.$emit("removeKeyword");
+      // 清除params参数
+      if (this.$route.query) {
+        // 一直true，可以直接跳，注意逻辑
+        this.$router.push({ name: "search", query: this.$route.query });
+      }
+    },
+    // 查询属性参数 子组件向父组件传递参数
+    trademarkInfo(trademark){
+        // 自定义之间回调
+        console.log("属性", trademark)
+    }
+  },
+  watch: {
+    // 监听路由的变化：一旦路由变化，则需要发送请求
+    $route(newValue, oldValue) {
+      // 不需要深度监听，只要可以监听到就可以了
+      // console.log(newValue, oldValue);
+      // 重新合并参
+      Object.assign(this.searchParams, this.$route.query, this.$route.params);
+      // console.log(this.searchParams);
+      this.getSearchData();
+      // 每一次请求完毕，初始化参数信息
+      // 分类名字和keyword不用置空，因为每次路由变化都会发生变化
+      // 如果当前字段可有可无，则可以将字段置为undefined，则不会传给服务器
+      this.searchParams.category1Id = undefined;
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
     },
   },
 };

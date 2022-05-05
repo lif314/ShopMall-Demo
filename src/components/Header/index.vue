@@ -38,6 +38,7 @@
             id="autocomplete"
             class="input-error input-xxlarge"
             v-model="keyword"
+            @keyup.enter="goSearch"
           />
           <button
             class="sui-btn btn-xlarge btn-danger"
@@ -59,6 +60,16 @@ export default {
     return {
       keyword: "", // 搜索关键词
     };
+  },
+  mounted() {
+    // 通过全局事件总线将keyword置空
+    this.$bus.$on("removeKeyword", () => {
+      this.keyword = "";
+    });
+  },
+  beforeDestroy() {
+    // 清除事件总线
+    this.$bus.$off("removeKeyword");
   },
   methods: {
     // 编程式导航，跳转到搜索页面
