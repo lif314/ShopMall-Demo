@@ -35,32 +35,20 @@
             </li>
           </ul>
         </div>
-
         <!--selector-->
-        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo" />
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo"/>
 
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <!-- 排序 -->
+                <li :class="{active: !isOrder}">
+                  <a  @click="changeSortItem('1')">综合 <span v-show="!isOrder"  :class="asc_desc"></span></a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{active: isOrder}" >
+                  <a @click="changeSortItem('2')">价格<span v-show="isOrder" :class="asc_desc"></span></a>
                 </li>
               </ul>
             </div>
@@ -165,7 +153,7 @@ export default {
         // 搜索关键词
         keyword: "",
         // 排序方式
-        order: "",
+        order: "1:desc",  // 1表示综合  降序  2 表示价格
         // 分页参数
         pageNo: 1,
         pageSize: 10,
@@ -189,8 +177,38 @@ export default {
   computed: {
     // getters不区分模块：传递的是数组，没有划分模块
     ...mapGetters(["goodsList", "pageInfo"]),
+    // 是否是价格排序
+    isOrder(){
+      return this.searchParams.order.indexOf('2')!=-1
+    },
+    // 是否是降序排列
+    isDesc(){
+        return this.searchParams.order.indexOf('desc')!=-1
+    },
+    // 排序方式，排序方式
+    asc_desc(){
+      return this.isDesc ? 'iconfont icon-jiantou_xiangxia':'iconfont icon-jiantou_xiangshang'
+    },
+
   },
   methods: {
+    // 排序点击事件
+    changeSortItem(flag){
+      // flag 1 点击综合， 2 点击价格
+      if(flag === '1'){
+          // 综合排序
+          let sort = this.searchParams.order.indexOf('desc') != -1?'asc':'desc';
+          this.searchParams.order = '1:' + sort;
+          // 重新发送请求
+          this.getSearchData();
+      }else{
+        // 价格排序
+        let sort = this.searchParams.order.indexOf('desc') != -1?'asc':'desc';
+         this.searchParams.order = '2:' + sort;
+          // 重新发送请求
+          this.getSearchData();
+      }
+    },
     // 获取搜索数据
     getSearchData() {
       this.$store.dispatch("getSearchList", this.searchParams);
