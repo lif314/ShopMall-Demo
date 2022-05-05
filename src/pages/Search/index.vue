@@ -21,11 +21,23 @@
               {{ searchParams.keyword }}<i @click="removeKeyword">x</i>
             </li>
             <!-- 品牌面包屑 -->
+            <li class="with-x" v-if="searchParams.trademark">
+              {{ searchParams.trademark.split(":")[1]
+              }}<i @click="removeTrademark">x</i>
+            </li>
+            <!-- 平台售卖属性面包屑 -->
+            <li
+              class="with-x"
+              v-for="(attr, index) in searchParams.props"
+              :key="index"
+            >
+              {{ attr.split(":")[1] }}<i @click="removeAttrValue(index)">x</i>
+            </li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector @trademarkInfo="trademarkInfo"/>
+        <SearchSelector @trademarkInfo="trademarkInfo" @attrInfo="attrInfo" />
 
         <!--details-->
         <div class="details clearfix">
@@ -158,7 +170,7 @@ export default {
         pageNo: 1,
         pageSize: 10,
         // 属性查询
-        props: [],
+        props: [], // 商品属性的数组: ["属性ID:属性值:属性名"]示例: ["2:6.0～6.24英寸:屏幕尺寸"]
         // 品牌信息
         trademark: "",
       },
@@ -183,7 +195,7 @@ export default {
     getSearchData() {
       this.$store.dispatch("getSearchList", this.searchParams);
     },
-    // 面包屑清除
+    // 分类面包屑清除
     removeCategoryName() {
       this.searchParams.categoryName = undefined;
       // 还需要发送请求
@@ -211,11 +223,38 @@ export default {
         this.$router.push({ name: "search", query: this.$route.query });
       }
     },
+    // 移除品牌面包屑
+    removeTrademark() {
+      // 品牌置空
+      this.searchParams.trademark = undefined;
+      // 再次发送发请求
+      this.getSearchData();
+    },
+    // 移除平台属性面包屑
+    removeAttrValue(index) {
+      this.searchParams.props.splice(index, 1);
+      // 再次发送发请求
+      this.getSearchData();
+    },
     // 查询属性参数 子组件向父组件传递参数
-    trademarkInfo(trademark){
-        // 自定义之间回调
-        console.log("属性", trademark)
-    }
+    trademarkInfo(trademark) {
+      // 自定义之间回调
+      // console.log("属性", trademark)
+      // 整理品牌字段参数 "ID:字段名"
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
+      // 再次发送请求获取数据
+      this.getSearchData();
+    },
+    // 平台属性
+    attrInfo(attrInfo) {
+      // console.log(attrInfo)
+      // 需要进行数据去重
+      if (this.searchParams.props.indexOf(attrInfo) === -1) {
+        this.searchParams.props.push(attrInfo);
+        //发送请求
+        this.getSearchData();
+      }
+    },
   },
   watch: {
     // 监听路由的变化：一旦路由变化，则需要发送请求
