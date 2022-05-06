@@ -1,4 +1,4 @@
-# xiaoji-smart-mall
+# xiaoji-smart-mall前端
 - CORS
 
 ## 三级分类
