@@ -3,6 +3,7 @@
 
 // 引入发送AJAX请求
 import { reqGetSkuDetails, reqAddOrUpdateShopCart } from "@/api"
+import {getUUID} from '@/utils/uuid_token'
 
 // search模块的仓库
 
@@ -41,7 +42,9 @@ const mutations = {
 
 // state: 仓库存储数据
 const state = {
-    skuDetails: {}
+    skuDetails: {},
+    // 游客的临时身份
+    uuid_token: getUUID()
 }
 
 

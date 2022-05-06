@@ -19,9 +19,9 @@
             <img src="./images/goods1.png">
             <div class="item-msg">米家（MIJIA） 小米小白智能摄像机增强版 1080p高清360度全景拍摄AI增强</div>
           </li>
-          <li class="cart-list-con3">
+          <!-- <li class="cart-list-con3">
             <div class="item-txt">语音升级款</div>
-          </li>
+          </li> -->
           <li class="cart-list-con4">
             <span class="price">399.00</span>
           </li>
@@ -48,9 +48,9 @@
             <img src="./images/goods2.png">
             <div class="item-msg">华为（MIJIA） 华为metaPRO 30 浴霸4摄像 超清晰</div>
           </li>
-          <li class="cart-list-con3">
+          <!-- <li class="cart-list-con3">
             <div class="item-txt">黑色版本</div>
-          </li>
+          </li> -->
           <li class="cart-list-con4">
             <span class="price">5622.00</span>
           </li>
@@ -77,9 +77,9 @@
             <img src="./images/goods3.png">
             <div class="item-msg">iphone 11 max PRO 苹果四摄 超清晰 超费电 超及好用</div>
           </li>
-          <li class="cart-list-con3">
+          <!-- <li class="cart-list-con3">
             <div class="item-txt">墨绿色</div>
-          </li>
+          </li> -->
           <li class="cart-list-con4">
             <span class="price">11399.00</span>
           </li>
@@ -127,6 +127,9 @@
 <script>
   export default {
     name: 'ShopCart',
+    mounted() {
+      this.$store.dispatch('getCartList')
+    },
   }
 </script>
 
@@ -191,11 +194,11 @@
           }
 
           .cart-list-con1 {
-            width: 4.1667%;
+            width: 15%;
           }
 
           .cart-list-con2 {
-            width: 25%;
+            width: 35%;
 
             img {
               width: 82px;
@@ -211,21 +214,21 @@
             }
           }
 
-          .cart-list-con3 {
-            width: 20.8333%;
+          // .cart-list-con3 {
+          //   width: 2%;
 
-            .item-txt {
-              text-align: center;
-            }
-          }
+          //   .item-txt {
+          //     text-align: center;
+          //   }
+          // }
 
           .cart-list-con4 {
-            width: 12.5%;
+            width: 10%;
 
           }
 
           .cart-list-con5 {
-            width: 12.5%;
+            width: 17%;
 
             .mins {
               border: 1px solid #ddd;
@@ -258,7 +261,7 @@
           }
 
           .cart-list-con6 {
-            width: 12.5%;
+            width: 10%;
 
             .sum {
               font-size: 16px;
@@ -266,7 +269,7 @@
           }
 
           .cart-list-con7 {
-            width: 12.5%;
+            width: 13%;
 
             a {
               color: #666;

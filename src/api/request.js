@@ -4,6 +4,8 @@ import axios from "axios";
 import nprogress from "nprogress";
 // 引入样式 可以自己更改样式
 import "nprogress/nprogress.css";
+// 引入数据仓库
+import store from '@/store'
 
 // 1、利用axios创建一个axios实例
 const requests = axios.create({
@@ -17,6 +19,10 @@ requests.interceptors.request.use((config)=>{
     // config配置对象，headers请求头比较重要
     // 启动nprocess进度条
     nprogress.start()
+    // 在请求头中设置UUID_TOKEN
+    if(store.state.detail.uuid_token){
+        config.headers.userTempId = store.state.detail.uuid_token
+    }
     return config
 })
 
