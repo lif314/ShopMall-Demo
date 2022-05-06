@@ -413,7 +413,15 @@ export default {
           await this.$store.dispatch('addOrUpdateShopCart', {skuId: this.skuInfo.id,skuNum: this.skuNum})
           // 成功了，进行路由跳转
           // 将产品的信息带给下一级路由
-          this.$router.push({name:'addcartsuccess'})
+          // 可以携带query参数: skuInfo也可以作为query参数带过去，但比较丑
+          // 可以使用本地存储：HTML新增功能--本地存储，会话存储
+          // sessionStorage: 不是持久化，浏览器关闭，即以此会话结束，数据消失
+          // localStorage: 持久化存储，上限5M
+          // 路由之间参数传递：简单的数据可以使用query参数传递，复杂数据可以使用会话存储传递，浏览器关闭，数据丢失
+          // 两种存储方式只能存储字符串，json数据
+          sessionStorage.setItem('SKUINFO', JSON.stringify(this.skuInfo))
+          sessionStorage.setItem('ATTRLIST', JSON.stringify({attrList:this.spuSaleAttrList}))
+          this.$router.push({name:'addcartsuccess', query:{skuNum: this.skuNum}});
       }catch(error){
           console.log(error.message)
       }
