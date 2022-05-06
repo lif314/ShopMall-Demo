@@ -31,7 +31,9 @@
 
         // 约束范围
         if(left < 0) left = 0;
+        if(left > mask.offsetWidth) left = mask.offsetWidth;
         if(top > mask.offsetHeight) top = mask.offsetHeight;
+        if(top < 0) top = 0;
         // 修改元素的left top属性值
         mask.style.left = left + 'px';
         mask.style.top = top + 'px';
