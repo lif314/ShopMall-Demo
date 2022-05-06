@@ -89,7 +89,12 @@
                   v-for="spuSaleAttrValue in spuSaleAttr.spuSaleAttrValueList"
                   :class="{ active: spuSaleAttrValue.isChecked == '1' }"
                   :key="spuSaleAttrValue.id"
-                  @click="changeActive(spuSaleAttrValue, spuSaleAttr.spuSaleAttrValueList)"
+                  @click="
+                    changeActive(
+                      spuSaleAttrValue,
+                      spuSaleAttr.spuSaleAttrValueList
+                    )
+                  "
                 >
                   {{ spuSaleAttrValue.saleAttrValueName }}
                 </dd>
@@ -97,12 +102,20 @@
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input autocomplete="off" class="itxt" value="1" />
-                <a href="javascript:" class="plus">+</a>
-                <a href="javascript:" class="mins">-</a>
+                <input
+                  autocomplete="off"
+                  class="itxt"
+                  v-model.number="skuNum"
+                  @change="changeSkuNum"
+                />
+                <a @click="skuNum++" class="plus">+</a>
+                <a @click="skuNum > 1 ? skuNum-- : (skuNum = 1)" class="mins"
+                  >-</a
+                >
               </div>
               <div class="add">
-                <a href="javascript:">加入购物车</a>
+                <!-- 路由跳转之前发送请求 -->
+                <a @click="addToCart">加入购物车</a>
               </div>
             </div>
           </div>
@@ -352,6 +365,11 @@ export default {
     ImageList,
     Zoom,
   },
+  data() {
+    return {
+      skuNum: 1, // 购买产品的个数
+    };
+  },
   computed: {
     ...mapGetters(["categoryView", "skuInfo", "spuSaleAttrList"]),
     // 给子组件传递数据，必须保证子组件中存在数据
@@ -365,15 +383,40 @@ export default {
   },
   methods: {
     // 选择售卖属性
-    changeActive(value, valueList){
+    changeActive(value, valueList) {
       // 排它实现
       // console.log(value, valueList)
       // 所有的售卖属性的isChecked置为0
-      valueList.forEach(element => {
-          element.isChecked = '0'
+      valueList.forEach((element) => {
+        element.isChecked = "0";
       });
       // 点击的值的isChecked置为1
-      value.isChecked = '1'
+      value.isChecked = "1";
+    },
+    // 改变商品件数 -- 前端校验
+    changeSkuNum(event) {
+      // 用户输入u非法文本 * 1
+      let value = event.target.value * 1;
+      if (isNaN(value) || value < 1) {
+        this.skuNum = 1;
+      } else {
+        // 不能输入小数
+        this.skuNum = parseInt(value);
+      }
+    },
+    // 添加购物车
+    async addToCart(){
+      // alert(this.skuInfo.id, this.skuNum)
+      // 返回数据在仓库中
+      // action的返回值是一个Promise,即可以知道是否成功
+      try{
+          await this.$store.dispatch('addOrUpdateShopCart', {skuId: this.skuInfo.id,skuNum: this.skuNum})
+          // 成功了，进行路由跳转
+          // 将产品的信息带给下一级路由
+          this.$router.push({name:'addcartsuccess'})
+      }catch(error){
+          console.log(error.message)
+      }
     }
   },
 };

@@ -40,6 +40,7 @@ import Search from  '@/pages/Search'
 import Login from  '@/pages/Login'
 import Register from  '@/pages/Register'
 import Detail from '@/pages/Detail'
+import AddCartSuccess from '@/pages/AddCartSuccess'
 
 
 /*
@@ -89,6 +90,15 @@ export default new VueRouter({
             component: Detail,
             meta:{
                 isFooterShow: true  // 显示Footer组件
+            }
+        },
+        {
+            // 添加购物车成功
+            name: 'addcartsuccess',
+            path:'/addcartsuccess',
+            component: AddCartSuccess,
+            meta:{
+                isFooterShow: true
             }
         }
     ],

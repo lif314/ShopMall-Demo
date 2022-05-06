@@ -2,7 +2,7 @@
 
 
 // 引入发送AJAX请求
-import { reqGetSkuDetails } from "@/api"
+import { reqGetSkuDetails, reqAddOrUpdateShopCart } from "@/api"
 
 // search模块的仓库
 
@@ -15,6 +15,19 @@ const actions = {
         if(res.code == 200){
             commit('GET_SKU_INFO', res.data)
         }
+    },
+    // 添加购物车 带有async会返回一个Promise
+    async addOrUpdateShopCart({commit}, {skuId,skuNum}){
+        let res = await reqAddOrUpdateShopCart(skuId, skuNum);
+        // 服务器没有返回数据，只返回了是否成功的表示，因为不需要commit
+        // console.log(res);
+        // action返回值是Promise[加上async一定是Promise]
+        if(res.code == 200){
+            return 'ok';
+        }else{
+            return Promise.reject(new Error('falied'));
+        }
+
     }
 }
 
