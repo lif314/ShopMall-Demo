@@ -1,17 +1,36 @@
 <template>
+<div>
   <div class="spec-preview">
-    <img src="../images/s1.png" />
+    <img :src="img.imgUrl" />
     <div class="event"></div>
     <div class="big">
-      <img src="../images/s1.png" />
+      <img :src="img.imgUrl" />
     </div>
     <div class="mask"></div>
   </div>
+</div>
 </template>
 
 <script>
   export default {
     name: "Zoom",
+    props:['skuImageList'],
+    data() {
+      return {
+        currentIndex: 0
+      }
+    },
+    computed: {
+      img(){
+        return this.skuImageList[this.currentIndex] || {}
+      }
+    },
+    mounted() {
+      // 全局事件总线获取当前图片的索引值
+      this.$bus.$on('getIndex', (index)=>{
+          this.currentIndex = index
+      })
+    },
   }
 </script>
 
