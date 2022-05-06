@@ -28,7 +28,7 @@ export default {
     changeCurIndex(index){
       this.currentIndex = index;
       // 点击后，给兄弟组件 Zoom发送信息
-      this.$bus.$emit('getIndex', index)
+      this.$bus.$emit('getIndex', this.skuImageList[index].imgUrl)
     }
   },
   watch: {
