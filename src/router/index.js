@@ -39,6 +39,7 @@ import Home from  '@/pages/Home'
 import Search from  '@/pages/Search'
 import Login from  '@/pages/Login'
 import Register from  '@/pages/Register'
+import Detail from '@/pages/Detail'
 
 
 /*
@@ -82,5 +83,17 @@ export default new VueRouter({
             path: '/register',
             component: Register
         },
-    ]
+        {
+            name: 'detail',
+            path: '/detail/:skuId',  // params参数，表示商品的id
+            component: Detail,
+            meta:{
+                isFooterShow: true  // 显示Footer组件
+            }
+        }
+    ],
+    // 控制路由滚动条信息
+    scrollBehavior (to, from , savedPosition){
+        return {y: 0}   // y=0表示滚动条在最上方
+    }
 })
