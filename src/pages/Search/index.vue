@@ -96,7 +96,7 @@
             </ul>
           </div>
           <!-- 分页器 -->
-          <Pagination :pageNo="6" :pageSize="3" :total="91" :continues="5"/>
+          <Pagination :pageNo="searchParams.pageNo" :pageSize="searchParams.pageSize" :total="total" :continues="5" @getPageNo='getPageNo'/>
         </div>
       </div>
     </div>
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 import SearchSelector from "./SearchSelector/SearchSelector";
 
 export default {
@@ -148,7 +148,7 @@ export default {
   },
   computed: {
     // getters不区分模块：传递的是数组，没有划分模块
-    ...mapGetters(["goodsList", "pageInfo"]),
+    ...mapGetters(["goodsList"]),
     // 是否是价格排序
     isOrder(){
       return this.searchParams.order.indexOf('2')!=-1
@@ -161,9 +161,18 @@ export default {
     asc_desc(){
       return this.isDesc ? 'iconfont icon-jiantou_xiangxia':'iconfont icon-jiantou_xiangshang'
     },
+    ...mapState({
+      total: state=>state.search.searchList.total
+    })
 
   },
   methods: {
+    // 获取当前点击的页
+    getPageNo(no){
+      // 自定义事件的回调函数
+        this.searchParams.pageNo = no
+        this.getSearchData()
+    },
     // 排序点击事件
     changeSortItem(flag){
       // flag 1 点击综合， 2 点击价格

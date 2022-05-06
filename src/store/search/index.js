@@ -42,14 +42,6 @@ const getters = {
     goodsList() {
         return state.searchList.goodsList || [];
     },
-    pageInfo(state){
-        return {
-            pageNo: state.searchList.pageNo,  // 当前第几页
-            pageSize: state.searchList.pageSize, 
-            total: state.searchList.total,
-            totalPages: state.searchList.totalPages
-        }
-    },
     trademarkList(state) {
         return state.searchList.trademarkList || []
     }
