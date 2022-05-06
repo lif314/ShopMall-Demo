@@ -10,9 +10,9 @@ import { reqCartList} from "@/api"
 const actions = {
     async getCartList({commit}){
         let res = await reqCartList();
-        console.log(res)  // 没有数据呜呜呜
+        // console.log(res)  // 没有数据呜呜呜
         if(res.code == 200){
-            commit('CART_LIST')
+            commit('CART_LIST', res.data)
         }
     }
 }
@@ -34,7 +34,9 @@ const state = {
 // getters: 类似计算属性，用于简化仓库数据，让组件获取仓库的数据更加方便
 // 简化仓库中的数据
 const getters = {
-   
+    cartInfoList(state){
+        return state.cartList[0].cartInfoList || []
+    }
 
 }
 
