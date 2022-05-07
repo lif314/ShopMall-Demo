@@ -106,9 +106,8 @@ export default {
         await  (phone && password==rePassword && code) && this.$store.dispatch("userRegister", { phone,password, code });
         // 注册成功，跳转登录
         this.$router.push({path: '/login'})
-
       } catch (error) {
-        
+        this.$router.push({path: '/register'})
       }
       
     },

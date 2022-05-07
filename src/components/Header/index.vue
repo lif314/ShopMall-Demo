@@ -6,10 +6,14 @@
       <div class="container">
         <div class="loginList">
           <p>尚品汇欢迎您！</p>
-          <p>
+          <p v-if="!userInfo.nickName">
             <span>请</span>
             <router-link to="/login">登录</router-link>
             <router-link class="register" to="/register">免费注册</router-link>
+          </p>
+          <p v-else>
+            <span>你好，{{ userInfo.nickName }}</span>
+            <router-link class="register" to="/register">退出登录</router-link>
           </p>
         </div>
         <div class="typeList">
@@ -59,13 +63,25 @@ export default {
   data() {
     return {
       keyword: "", // 搜索关键词
+      userInfo: {},
     };
+  },
+  computed: {
+    userInfo() {
+      return this.$store.state.user.userInfo;
+    },
+  },
+  updated() {
+    this.$store.dispatch("getUserInfo");
   },
   mounted() {
     // 通过全局事件总线将keyword置空
     this.$bus.$on("removeKeyword", () => {
       this.keyword = "";
     });
+
+    // 获取用户登录信息
+    this.$store.dispatch("getUserInfo");
   },
   beforeDestroy() {
     // 清除事件总线
