@@ -17,7 +17,11 @@
               type="checkbox"
               name="chk_list"
               :checked="item.isChecked == 1"
-              @click="item.isChecked == 1? item.isChecked=0:item.isChecked=1"
+              @click="
+                item.isChecked == 1
+                  ? (item.isChecked = 0)
+                  : (item.isChecked = 1)
+              "
             />
           </li>
           <li class="cart-list-con2">
@@ -30,22 +34,25 @@
           <li class="cart-list-con4">
             <span class="price">{{ item.skuPrice }}</span>
           </li>
+          <!-- 商品数量 -->
           <li class="cart-list-con5">
-            <a href="javascript:void(0)" class="mins">-</a>
+            <a class="mins" @click="handler('minus', -1, item)">-</a>
             <input
               autocomplete="off"
               type="text"
               :value="item.skuNum"
               minnum="1"
               class="itxt"
+              @change="handler('change', $event.target.value * 1, item)"
             />
-            <a href="javascript:void(0)" class="plus">+</a>
+            <a class="plus" @click="handler('add', 1, item)">+</a>
           </li>
+
           <li class="cart-list-con6">
             <span class="sum">{{ item.skuPrice * item.skuNum }}</span>
           </li>
           <li class="cart-list-con7">
-            <a href="#none" class="sindelet">删除</a>
+            <button @click="deleteCart(item.skuId)"  class="sindelet">删除</button>
             <br />
             <a href="#none">移到收藏</a>
           </li>
@@ -63,7 +70,10 @@
         <a href="#none">清除下柜商品</a>
       </div>
       <div class="money-box">
-        <div class="chosed">已选择 <span>{{total.checkedNum}}</span>件商品</div>
+        <div class="chosed">
+          已选择 <span>{{ total.checkedNum }}</span
+          >件商品
+        </div>
         <div class="sumprice">
           <em>总价（不含运费） ： </em>
           <i class="summoney">￥ {{ total.checkedPrice }}</i>
@@ -78,14 +88,72 @@
 
 <script>
 import { mapGetters } from "vuex";
+import throttle from "lodash/throttle";
 
 export default {
   name: "ShopCart",
   mounted() {
-    this.$store.dispatch("getCartList");
+    this.getData();
+  },
+  methods: {
+    getData() {
+      this.$store.dispatch("getCartList");
+    },
+    // 删除商品  节流
+    deleteCart:throttle(async function(skuId){
+      try {
+        await this.$store.dispatch('deleteCartListBySkuId', {skuId})
+        this.getData()
+      } catch (error) {
+        console.log(error.message) 
+      }
+    }, 20),
+    // 更新购物车中商品数量
+    //修改某一个产品的个数[节流]
+    handler: throttle(async function (type, disNum, cart) {
+      //type:为了区分这三个元素
+      //disNum形参:+ 变化量（1）  -变化量（-1）   input最终的个数（并不是变化量）
+      //cart:哪一个产品【身上有id】
+      //向服务器发请求，修改数量
+      switch (type) {
+        //加号
+        case "add":
+          disNum = 1;
+          break;
+        case "minus":
+          //判断产品的个数大于1，才可以传递给服务器-1
+          //如果出现产品的个数小于等于1，传递给服务器个数0（原封不动）
+          disNum = cart.skuNum > 1 ? -1 : 0;
+          break;
+        case "change":
+          // //用户输入进来的最终量，如果非法的（带有汉字|出现负数），带给服务器数字零
+          if (isNaN(disNum) || disNum < 1) {
+            // 此时不应该发送请求
+            disNum = 0;
+          } else {
+            //属于正常情况（小数：取证），带给服务器变化的量 用户输入进来的 - 产品的起始个数
+            disNum = parseInt(disNum) - cart.skuNum;
+          }
+          // disNum = (isNaN(disNum)||disNum<1)?0:parseInt(disNum) - cart.skuNum;
+          break;
+      }
+      //派发action
+      try {
+        //代表的是修改成功
+        await this.$store.dispatch("addOrUpdateShopCart", {
+          skuId: cart.skuId,
+          skuNum: disNum,
+        });
+        //再一次获取服务器最新的数据进行展示
+        this.getData();
+      } catch (error) {}
+    }, 50),
   },
   computed: {
-    ...mapGetters(["cartInfoList"]),
+    ...mapGetters(["cartList"]),
+    cartInfoList() {
+      return this.cartList.cartInfoList || [];
+    },
     // 计算勾选的产品总价和产品总数
     total() {
       let checkedPrice = 0;

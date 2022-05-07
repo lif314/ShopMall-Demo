@@ -60,3 +60,10 @@ export const reqCartList = ()=>requests({
     url:'cart/cartList',
     method:'get'
 })
+
+// 删除购物车中的商品
+// DETELE /api/cart/deleteCart/{skuId}
+export const reqDeleteCartBySkuId = (skuId)=>requests({
+    url: `/cart/deleteCart/${skuId}`,
+    method: 'delete'
+})

@@ -2,7 +2,7 @@
 
 
 // 引入发送AJAX请求
-import { reqCartList} from "@/api"
+import { reqCartList, reqDeleteCartBySkuId} from "@/api"
 
 // search模块的仓库
 
@@ -14,7 +14,17 @@ const actions = {
         if(res.code == 200){
             commit('CART_LIST', res.data)
         }
+    },
+    // 删除购物车中商品
+    async deleteCartListBySkuId({commit}, {skuId}){
+        let res = await reqDeleteCartBySkuId(skuId);
+        if(res.code == 200){
+            return 'ok';
+        }else{
+            return Promise.reject(new Error('failed'))
+        }
     }
+
 }
 
 // mutations: 修改state的唯一手段
@@ -34,8 +44,8 @@ const state = {
 // getters: 类似计算属性，用于简化仓库数据，让组件获取仓库的数据更加方便
 // 简化仓库中的数据
 const getters = {
-    cartInfoList(state){
-        return state.cartList[0].cartInfoList || []
+    cartList(state){
+        return state.cartList[0] || {}
     }
 
 }
