@@ -95,7 +95,7 @@ export default {
             password: this.password,
           });
           // 获取用户登录信息 -- 提前触发获取用户信息
-          this.$store.dispatch("getUserInfo");
+          // this.$store.dispatch("getUserInfo");  // 刷新会丢失用户信息
           this.$router.push("/home");
         } catch (error) {
           this.$router.push("/login");
