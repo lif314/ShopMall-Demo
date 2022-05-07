@@ -17,11 +17,7 @@
               type="checkbox"
               name="chk_list"
               :checked="item.isChecked == 1"
-              @click="
-                item.isChecked == 1
-                  ? (item.isChecked = 0)
-                  : (item.isChecked = 1)
-              "
+              @change="updateCartStatus(item.skuId, $event)"
             />
           </li>
           <li class="cart-list-con2">
@@ -52,7 +48,9 @@
             <span class="sum">{{ item.skuPrice * item.skuNum }}</span>
           </li>
           <li class="cart-list-con7">
-            <button @click="deleteCart(item.skuId)"  class="sindelet">删除</button>
+            <button @click="deleteCart(item.skuId)" class="sindelet">
+              删除
+            </button>
             <br />
             <a href="#none">移到收藏</a>
           </li>
@@ -61,13 +59,18 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" />
+        <input
+          class="chooseAll"
+          type="checkbox"
+          @click="updateAllChecked"
+          :checked="total.allChecked && cartInfoList.length != 0"
+        />
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
-        <a href="#none">移到我的关注</a>
-        <a href="#none">清除下柜商品</a>
+        <button @click="deleteAllCheckedCart">删除选中的商品</button>
+        <button>移到我的关注</button>
+        <button>清除下柜商品</button>
       </div>
       <div class="money-box">
         <div class="chosed">
@@ -95,17 +98,69 @@ export default {
   mounted() {
     this.getData();
   },
+  computed: {
+    ...mapGetters(["cartList"]),
+    cartInfoList() {
+      return this.cartList.cartInfoList || [];
+    },
+    // 计算勾选的产品总价和产品总数
+    total() {
+      let checkedPrice = 0;
+      let checkedNum = 0;
+      let allChecked = 1;
+      this.cartInfoList.forEach((element) => {
+        if (element.isChecked === 1) {
+          checkedNum += element.skuNum;
+          checkedPrice += element.skuPrice * element.skuNum;
+        } else {
+          allChecked = 0;
+        }
+      });
+      return { allChecked, checkedPrice, checkedNum };
+    },
+  },
   methods: {
     getData() {
       this.$store.dispatch("getCartList");
     },
-    // 删除商品  节流
-    deleteCart:throttle(async function(skuId){
+    // 全选操作
+    async updateAllChecked(event) {
       try {
-        await this.$store.dispatch('deleteCartListBySkuId', {skuId})
-        this.getData()
+        let checked = event.target.checked? '1' : '0'
+        await this.$store.dispatch("updateAllChecked", {isChecked: checked});
+        // 重新获取商品列表
+        this.getData();
       } catch (error) {
-        console.log(error.message) 
+        console.log(error.message);
+      }
+    },
+    // 删除选中的商品
+    async deleteAllCheckedCart() {
+      try {
+        await this.$store.dispatch("deleteAllCheckedCart");
+        // 重新获取商品列表
+        this.getData();
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+    // 更新商品选择状态
+    async updateCartStatus(skuId, event) {
+      let isChecked = event.target.checked ? 1 : 0;
+      try {
+        await this.$store.dispatch("updateCartStatus", { skuId, isChecked });
+        this.getData();
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+    // 删除商品  节流
+    deleteCart: throttle(async function (skuId) {
+      try {
+        await this.$store.dispatch("deleteCartListBySkuId", { skuId });
+        this.getData();
+      } catch (error) {
+        console.log(error.message);
       }
     }, 20),
     // 更新购物车中商品数量
@@ -149,28 +204,13 @@ export default {
       } catch (error) {}
     }, 50),
   },
-  computed: {
-    ...mapGetters(["cartList"]),
-    cartInfoList() {
-      return this.cartList.cartInfoList || [];
-    },
-    // 计算勾选的产品总价和产品总数
-    total() {
-      let checkedPrice = 0;
-      let checkedNum = 0;
-      this.cartInfoList.forEach((element) => {
-        if (element.isChecked === 1) {
-          checkedNum += element.skuNum;
-          checkedPrice += element.skuPrice * element.skuNum;
-        }
-      });
-      return { checkedPrice, checkedNum };
-    },
-  },
 };
 </script>
 
 <style lang="less" scoped>
+button {
+  margin-left: 10px;
+}
 .cart {
   width: 1200px;
   margin: 0 auto;
