@@ -7,6 +7,7 @@ import home from './home/index'
 import search from './search/index'
 import detail from "./detail";
 import cart from "./cart";
+import user from "./user";
 
 // vuex模块式开发
 export default new Vuex.Store({
@@ -14,6 +15,7 @@ export default new Vuex.Store({
         home,
         search,
         detail,
-        cart
+        cart,
+        user
     }
 })

@@ -74,3 +74,17 @@ export const reqUpdateCartCheckedById = (skuId, isChecked)=>requests({
     url:`/cart/checkCart/${skuId}/${isChecked}`,
     method: 'get'
 })
+
+
+// 获取验证码
+export const reqGetCode = (phone)=>requests({
+    url: `/user/passport/sendCode/${phone}`,
+    method: 'get'
+})
+
+// 提交注册
+export const reqUserRegister = (regInfo)=>requests({
+    url: '/user/passport/register',
+    data: regInfo,
+    method: 'post'
+})
