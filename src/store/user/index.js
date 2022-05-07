@@ -2,8 +2,8 @@
 
 
 // 引入发送AJAX请求
-import { reqGetCode, reqUserRegister, reqUserLogin, reqUserInfo } from "@/api"
-import { setToken, getToken } from '@/utils/token'
+import { reqLogout, reqGetCode, reqUserRegister, reqUserLogin, reqUserInfo } from "@/api"
+import { setToken, getToken, removeToken } from '@/utils/token'
 
 // search模块的仓库
 
@@ -59,6 +59,17 @@ const actions = {
         } else {
             return Promise.reject(new Error('failed'))
         }
+    },
+    // 退出登录
+    async logout({ commit }) {
+        // 通知服务器清除token数据
+        let res = await reqLogout();
+        if (res.code == 200) {
+            commit('LOGOUT')
+            return 'ok'
+        }else{
+            return Promise.reject(new Error('failed'))
+        }
     }
 }
 
@@ -72,6 +83,13 @@ const mutations = {
     },
     USER_INFO(state, userInfo) {
         state.userInfo = userInfo
+    },
+    LOGOUT(state) {
+        state.code = ''
+        state.userInfo = {}
+        state.token = ''
+        // 清除本地存储的token
+        removeToken()
     }
 }
 

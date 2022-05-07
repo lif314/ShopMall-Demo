@@ -13,7 +13,7 @@
           </p>
           <p v-else>
             <span>你好，{{ userInfo.nickName }}</span>
-            <router-link class="register" to="/register">退出登录</router-link>
+            <a class="register" @click="logout">退出登录</a>
           </p>
         </div>
         <div class="typeList">
@@ -63,7 +63,6 @@ export default {
   data() {
     return {
       keyword: "", // 搜索关键词
-      userInfo: {},
     };
   },
   computed: {
@@ -71,23 +70,30 @@ export default {
       return this.$store.state.user.userInfo;
     },
   },
-  updated() {
-    this.$store.dispatch("getUserInfo");
-  },
   mounted() {
     // 通过全局事件总线将keyword置空
     this.$bus.$on("removeKeyword", () => {
       this.keyword = "";
     });
-
     // 获取用户登录信息
-    this.$store.dispatch("getUserInfo");
+    // this.$store.dispatch("getUserInfo");
   },
   beforeDestroy() {
     // 清除事件总线
     this.$bus.$off("removeKeyword");
   },
   methods: {
+    // 退出登录
+    async logout() {
+      // 发送请求通知服务器
+      // 清除项目中的数据
+      try {
+        this.$store.dispatch("logout");
+        this.$router.push("/home");
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
     // 编程式导航，跳转到搜索页面
     goSearch() {
       // 路由传递参数
