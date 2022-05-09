@@ -172,7 +172,8 @@ export default {
             done();
           } else {
             // 确认按钮
-            if (this.code === 200) {
+            // TODO 留个后门
+            // if (this.code === 200) {
               // 支付成功
               // 清除定时器
               clearInterval(this.timer);
@@ -181,7 +182,7 @@ export default {
               done();
               // 跳转到支付成功页面
               this.$router.push("/paysuccess");
-            }
+            // }
           }
         },
       });

@@ -46,6 +46,9 @@ import Trade from '@/pages/Order/Trade'
 import Center from '@/pages/Order/Center'
 import Pay from '@/pages/Order/Pay'
 import PaySuccess from '@/pages/Order/PaySuccess'
+// 引入二级路由
+import MyOrder from '@/pages/Order/Center/MyOrder'
+import GroupOrder from '@/pages/Order/Center/GroupOrder'
 
 
 /*
@@ -146,7 +149,21 @@ const router = new VueRouter({
             // 订单中心
             name: 'center',
             path: '/center',
+            redirect: '/center/myorder',
             component: Center,
+            children: [
+                // 二级路由
+                {
+                    name: 'myorder',
+                    path: 'myorder',  // 要么写全，要么不写/
+                    component: MyOrder
+                },
+                {
+                    name: 'grouporder',
+                    path: 'grouporder',
+                    component: GroupOrder
+                }
+            ]
         }
     ],
     // 控制路由滚动条信息

@@ -142,3 +142,12 @@ export const reqPayStatus = ({orderId})=>requests({
     url:`/payment/weixin/queryPayStatus/${orderId}`,
     method: 'get'
 })
+
+
+// 获取订单的列表数据
+export const reqOrderList = ({page, limit})=>requests({
+    url: `/order/auth/${page}/${limit}`,
+    method: 'get'
+})
+
+
