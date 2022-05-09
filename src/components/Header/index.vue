@@ -17,7 +17,7 @@
           </p>
         </div>
         <div class="typeList">
-          <router-link to="/###">我的订单</router-link>
+          <router-link to="/center/myorder">我的订单</router-link>
           <router-link to="/shopcart">我的购物车</router-link>
           <router-link to="/###">我的尚品汇</router-link>
           <router-link to="/###">尚品汇会员</router-link>

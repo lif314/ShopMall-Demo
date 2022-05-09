@@ -123,8 +123,16 @@ const router = new VueRouter({
             name: 'trade',
             path: '/trade',
             component: Trade,
-            meta:{
+            meta: {
                 isFooterShow: true,
+            },
+            // 路由独享守卫: 必须从购物车而来
+            beforeEnter:(to, from , next)=>{
+                if(from.path =='/shopcart'){
+                    next()
+                }else{
+                    next(false)
+                }
             }
         },
         {
@@ -132,8 +140,16 @@ const router = new VueRouter({
             name: 'pay',
             path: '/pay',
             component: Pay,
-            meta:{
+            meta: {
                 isFooterShow: true,
+            },
+            beforeEnter:(to, from ,next)=>{
+                // 必须从确认订单页而来
+                if(from.path == '/trade'){
+                    next()
+                }else{
+                    next(false)
+                }
             }
         },
         {
@@ -143,6 +159,14 @@ const router = new VueRouter({
             component: PaySuccess,
             meta: {
                 isFooterShow: true
+            },
+            beforeEnter:(to, from ,next)=>{
+                // 必须从确认订单页而来
+                if(from.path == '/pay'){
+                    next()
+                }else{
+                    next(false)
+                }
             }
         },
         {
@@ -173,7 +197,7 @@ const router = new VueRouter({
 })
 
 
-// 全局守卫  前置守卫(在路由跳转之间进行判断)
+// 未登录的全局守卫  前置守卫(在路由跳转之间进行判断)
 router.beforeEach(async (to, from, next) => {
     // to: 目的路由
     // from：起始路由
@@ -207,9 +231,13 @@ router.beforeEach(async (to, from, next) => {
         }
 
     } else {
-        // 没有登录，去登录页
-        next()
-        // next('/login')
+        // 没有登录，不能去交易相关的页面[pay | paysuccess] 个人中心
+        let toPath = to.path;
+        if (toPath.indexOf('/trade') != -1 || toPath.indexOf('/pay') != -1 || toPath.indexOf('/center') != -1) {
+            next('/login?redirect=' + toPath)
+        } else {
+            next()
+        }
     }
 })
 

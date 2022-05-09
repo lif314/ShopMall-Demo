@@ -60,8 +60,9 @@
                 <div class="list-wrap">
                   <div class="p-img">
                     <!-- 跳转到商品详情页 -->
+                    <!-- 图片懒加载 -->
                     <router-link :to="`/detail/${goods.id}`">
-                      ><img :src="goods.defaultImg"
+                      <img v-lazy="goods.defaultImg"
                     /></router-link>
                   </div>
                   <div class="price">

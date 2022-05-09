@@ -26,6 +26,24 @@ import store from '@/store'
 // 统一接口api文件夹中的全部请求
 // import * as API from '@/api'
 
+// 图片懒加载
+import VueLazyload from 'vue-lazyload'
+// Vue.use(VueLazyload, {
+//   preLoad: 1.3,
+//   error: 'dist/error.png',
+//   loading: 'dist/loading.gif',
+//   attempt: 1
+// })
+Vue.use(VueLazyload) // 懒加载
+/*
+使用方式
+<ul>
+  <li v-for="img in list">
+    <img v-lazy="img.src" >
+  </li>
+</ul>
+*/
+
 Vue.config.productionTip = false
 
 new Vue({
