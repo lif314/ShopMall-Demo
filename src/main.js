@@ -20,6 +20,9 @@ import 'swiper/css/swiper.css';
 // 使用vuex
 import store from '@/store'
 
+// 统一接口api文件夹中的全部请求
+// import * as API from '@/api'
+
 Vue.config.productionTip = false
 
 new Vue({
@@ -29,5 +32,7 @@ new Vue({
   beforeCreate(){
     // 配置全局事件总线
     Vue.prototype.$bus = this;
+    // 挂载api
+    // vue.prototype.$API = API;
   }
 }).$mount('#app')

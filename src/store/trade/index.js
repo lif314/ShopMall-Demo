@@ -8,7 +8,7 @@ const actions = {
     //  收货人地址信息
     async getUserAddress({commit}){
         let res =  await reqAddressInfo()
-        console.log(res)
+        // console.log(res)
         if(res.code == 200){
             commit('USER_ADDRESS', res.data)
         }
@@ -16,11 +16,16 @@ const actions = {
    // 订单商品信息
    async getOrderInfo({commit}){
         let res = await reqOrderInfo();
-        console.log(res)
+        // console.log(res)
         if(res.code == 200){
             commit('ORDER_INFO', res.data)
         }
-    }
+    },
+    // // 提交订单
+    // async submitOrder({commit}, tradeNo, data){
+    //     let res = await reqSubmitOrder(tradeNo, data);
+    //     console.log(res)
+    // }
 
 }
 

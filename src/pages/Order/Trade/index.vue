@@ -43,7 +43,11 @@
           :key="goods.skuId"
         >
           <li>
-            <img :src="goods.imgUrl" alt="" style="width: 100px; height: 80px"/>
+            <img
+              :src="goods.imgUrl"
+              alt=""
+              style="width: 100px; height: 80px"
+            />
           </li>
           <li>
             <p>
@@ -76,8 +80,10 @@
     <div class="money clearFix">
       <ul>
         <li>
-          <b><i>{{total.totalSkuNum}}</i> 件商品，总商品金额</b>
-          <span>¥ {{total.totalPrice}}</span>
+          <b
+            ><i>{{ total.totalSkuNum }}</i> 件商品，总商品金额</b
+          >
+          <span>¥ {{ total.totalPrice }}</span>
         </li>
         <li>
           <b>返现：</b>
@@ -90,22 +96,25 @@
       </ul>
     </div>
     <div class="trade">
-      <div class="price">应付金额:　<span>¥ {{total.totalPrice}}</span></div>
+      <div class="price">
+        应付金额:　<span>¥ {{ total.totalPrice }}</span>
+      </div>
       <div class="receiveInfo">
         寄送至:
-        <span>{{userDefaultAddrerss.fullAddress}}</span>
-        收货人：<span>{{userDefaultAddrerss.consignee}}</span>
-        <span>  {{userDefaultAddrerss.phoneNum}}</span>
+        <span>{{ userDefaultAddrerss.fullAddress }}</span>
+        收货人：<span>{{ userDefaultAddrerss.consignee }}</span>
+        <span> {{ userDefaultAddrerss.phoneNum }}</span>
       </div>
     </div>
     <div class="sub clearFix">
-      <router-link class="subBtn" to="/pay" @click="submitOrder">提交订单</router-link>
+      <a class="subBtn" to="/pay" @click="submitOrder">提交订单</a>
     </div>
   </div>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import { reqSubmitOrder } from "@/api";
 
 export default {
   name: "Trade",
@@ -118,24 +127,25 @@ export default {
       userAddressList: (state) => state.trade.userAddressList,
       orderInfo: (state) => state.trade.orderInfo,
     }),
-    userDefaultAddrerss(){
-      return this.userAddressList.find(item=>item.isDefault == '1')
+    userDefaultAddrerss() {
+      return this.userAddressList.find((item) => item.isDefault == "1");
     },
-    total(){
+    total() {
       // 商品总的数量
       let totalSkuNum = 0;
       let totalPrice = 0;
-      this.orderInfo.detailArrayList.forEach((item)=>{
-          totalSkuNum += item.skuNum;
-          totalPrice += item.skuNum * item.orderPrice;
-      })
-      return {totalSkuNum, totalPrice};
-    }
+      this.orderInfo.detailArrayList.forEach((item) => {
+        totalSkuNum += item.skuNum;
+        totalPrice += item.skuNum * item.orderPrice;
+      });
+      return { totalSkuNum, totalPrice };
+    },
   },
   data() {
     return {
-        msg: '', // 买家留言
-    }
+      msg: "", // 买家留言
+      orderId: null,
+    };
   },
   methods: {
     // 修改默认地址
@@ -146,9 +156,27 @@ export default {
       address.isDefault = "1";
     },
     // 提交订单
-    submitOrder(){
-      
-    }
+    async submitOrder() {
+      // this.$store.dispatch('submitOrder', tradeNo, data)
+      let { traderNo } = this.orderInfo;
+      let data = {
+        consignee: this.userDefaultAddrerss.consignee,
+        consigneeTel: this.userDefaultAddrerss.phoneNum,
+        deliveryAddress: this.userDefaultAddrerss.fullAddress,
+        paymentWay: "ONLINE",
+        orderComment: this.msg,
+        orderDetailList: this.orderInfo.detailArrayList,
+      };
+      let res = await reqSubmitOrder(traderNo, data);
+      console.log(res);
+      if (res.code == 200) {
+        this.orderId = res.data; // 订单号
+        // 路由传参
+        this.$router.push("/pay/orderId=" + this.orderId);
+      } else {
+        console.log(res.data);
+      }
+    },
   },
 };
 </script>
