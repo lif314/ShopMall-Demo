@@ -116,10 +116,19 @@ const router = new VueRouter({
             }
         },
         {
-            // 支付
+            // 确认订单
             name: 'trade',
             path: '/trade',
             component: Trade,
+            meta:{
+                isFooterShow: true,
+            }
+        },
+        {
+            // 提交订单
+            name: 'pay',
+            path: '/pay',
+            component: Pay,
             meta:{
                 isFooterShow: true,
             }
