@@ -181,6 +181,7 @@ export default {
   .container {
     width: 1200px;
     margin: 0 auto;
+    // margin-bottom: 30px;
     display: flex;
     position: relative;
 

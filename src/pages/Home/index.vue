@@ -2,6 +2,7 @@
     <div>
         <!-- 全局组件 -->
         <TypeNav></TypeNav>
+        <!-- <div class="blank"></div> -->
         <!-- 轮播图组件 -->
         <ListContainer></ListContainer>
         <Recommend/>
@@ -46,5 +47,7 @@ export default {
 </script>
 
 <style>
-
+/* .blank{
+    height: 40px ;
+} */
 </style>
