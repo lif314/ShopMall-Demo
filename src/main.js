@@ -10,6 +10,9 @@ Vue.component(Carousel.name, Carousel)
 import Pagination from './components/Pagination'
 Vue.component(Pagination.name, Pagination)
 
+// 按需求引入ElemetUI
+import { MessageBox } from 'element-ui'
+
 // 引入路由
 import router from '@/router'
 //引入MockServer.js----mock数据
@@ -27,12 +30,15 @@ Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
-  router:router, // 注册路由
+  router: router, // 注册路由
   store,   //注册仓库  $store
-  beforeCreate(){
+  beforeCreate() {
     // 配置全局事件总线
     Vue.prototype.$bus = this;
     // 挂载api
     // vue.prototype.$API = API;
+    // 按需求引入ElementUI
+    Vue.prototype.$msgbox = MessageBox;
+    Vue.prototype.$alert = MessageBox.alert;
   }
 }).$mount('#app')

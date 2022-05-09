@@ -76,7 +76,7 @@
         <div class="hr"></div>
 
         <div class="submit">
-          <router-link class="btn" to="/paysuccess">立即支付</router-link>
+          <a class="btn" @click="open">立即支付</a>
         </div>
         <div class="otherpay">
           <div class="step-tit">
@@ -94,6 +94,8 @@
 
 <script>
 import { reqOrderPayInfo } from "@/api";
+// 生成二维码
+import QRCode from "qrcode";
 
 export default {
   name: "Pay",
@@ -104,7 +106,11 @@ export default {
   },
   data() {
     return {
-      payInfo: {},
+      payInfo: {
+        codeUrl: 'weixin://wxpay/bizpayurl?pr=P0aPBJK',
+        orderId: 71,
+        totalFee: 23996,
+      },
     };
   },
   // 不要在生命周期函数上添加 async
@@ -118,22 +124,38 @@ export default {
       let res = await reqOrderPayInfo(this.orderId);
       console.log(res);
       if (res.code == 200) {
-        this.payInfo = res.data;
+        // this.payInfo = res.data;
         /*
         {
-    "code": 200,
-    "message": "成功",
-    "data": {
+      "code": 200,
+      "message": "成功",
+      "data": {
         "codeUrl": "weixin://wxpay/bizpayurl?pr=P0aPBJK",
         "orderId": 71,
         "totalFee": 23996,
         "resultCode": "SUCCESS"
-    },
-    "ok": true
-}
-
+      },
+      "ok": true    
+      }
         */
       }
+    },
+    // 打开微信支付码
+    async open() {
+      // 生成二维码  With async/await
+      let url = await QRCode.toDataURL(this.payInfo.codeUrl);
+      this.$alert(
+        `<strong><img src='${url}' /></strong>`,
+        "微信扫码支付",
+        {
+          dangerouslyUseHTMLString: true,
+          center: true,
+          showCancelButton: true,
+          cancelButtonText: "支付遇到问题",
+        }
+      );
+      // 支付成功与失败
+      
     },
   },
 };
