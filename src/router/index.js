@@ -35,21 +35,23 @@ VueRouter.prototype.replace = function (location, resolve, reject) {
 Vue.use(VueRouter)
 
 // 引入组件
-import Home from '@/pages/Home'
-import Search from '@/pages/Search'
-import Login from '@/pages/Login'
-import Register from '@/pages/Register'
-import Detail from '@/pages/Detail'
-import AddCartSuccess from '@/pages/AddCartSuccess'
-import ShopCart from '@/pages/ShopCart'
-import Trade from '@/pages/Order/Trade'
-import Center from '@/pages/Order/Center'
-import Pay from '@/pages/Order/Pay'
-import PaySuccess from '@/pages/Order/PaySuccess'
-// 引入二级路由
-import MyOrder from '@/pages/Order/Center/MyOrder'
-import GroupOrder from '@/pages/Order/Center/GroupOrder'
+// import Home from '@/pages/Home'
+// import Search from '@/pages/Search'
+// import Login from '@/pages/Login'
+// import Register from '@/pages/Register'
+// import Detail from '@/pages/Detail'
+// import AddCartSuccess from '@/pages/AddCartSuccess'
+// import ShopCart from '@/pages/ShopCart'
+// import Trade from '@/pages/Order/Trade'
+// import Center from '@/pages/Order/Center'
+// import Pay from '@/pages/Order/Pay'
+// import PaySuccess from '@/pages/Order/PaySuccess'
+// // 引入二级路由
+// import MyOrder from '@/pages/Order/Center/MyOrder'
+// import GroupOrder from '@/pages/Order/Center/GroupOrder'
 
+
+// 路由懒加载： 使用时才加载路由
 
 /*
 - 路由可以传递参数props,是prams参数  
@@ -70,7 +72,8 @@ const router = new VueRouter({
         },
         {
             path: '/home',
-            component: Home,
+            // 路由懒加载，当访问时才执行函数加载路由信息
+            component: ()=>import('@/pages/Home'),
             meta: {
                 isFooterShow: true
             }
@@ -79,23 +82,23 @@ const router = new VueRouter({
             name: 'search', // params传递参数必须使用名字
             path: '/search/:keyword?', // params传递参数需要进行占位, ?表示可传可不传
             // path: '/search', // params传递参数需要进行占位, ?表示可传可不传
-            component: Search,
+            component: ()=>import('@/pages/Search'),
             meta: {
                 isFooterShow: true  // 显示Footer组件
             }
         },
         {
             path: '/login',
-            component: Login,
+            component: ()=>import('@/pages/Login'),
         },
         {
             path: '/register',
-            component: Register
+            component: ()=>import('@/pages/Register')
         },
         {
             name: 'detail',
             path: '/detail/:skuId',  // params参数，表示商品的id
-            component: Detail,
+            component: ()=>import('@/pages/Detail'),
             meta: {
                 isFooterShow: true  // 显示Footer组件
             }
@@ -104,7 +107,7 @@ const router = new VueRouter({
             // 添加购物车成功
             name: 'addcartsuccess',
             path: '/addcartsuccess',
-            component: AddCartSuccess,
+            component: ()=>import('@/pages/AddCartSuccess'),
             meta: {
                 isFooterShow: true
             }
@@ -113,7 +116,7 @@ const router = new VueRouter({
             // 购物车路由
             name: 'shopcart',
             path: '/shopcart',
-            component: ShopCart,
+            component: ()=>import('@/pages/ShopCart'),
             meta: {
                 isFooterShow: true
             }
@@ -122,7 +125,7 @@ const router = new VueRouter({
             // 确认订单
             name: 'trade',
             path: '/trade',
-            component: Trade,
+            component: ()=>import('@/pages/Order/Trade'),
             meta: {
                 isFooterShow: true,
             },
@@ -139,7 +142,7 @@ const router = new VueRouter({
             // 提交订单
             name: 'pay',
             path: '/pay',
-            component: Pay,
+            component: ()=>import('@/pages/Order/Pay'),
             meta: {
                 isFooterShow: true,
             },
@@ -156,7 +159,7 @@ const router = new VueRouter({
             // 支付成功页面
             name: 'paysuccess',
             path: '/paysuccess',
-            component: PaySuccess,
+            component:()=>import('@/pages/Order/PaySuccess'),
             meta: {
                 isFooterShow: true
             },
@@ -174,18 +177,18 @@ const router = new VueRouter({
             name: 'center',
             path: '/center',
             redirect: '/center/myorder',
-            component: Center,
+            component: ()=>import('@/pages/Order/Center'),
             children: [
                 // 二级路由
                 {
                     name: 'myorder',
                     path: 'myorder',  // 要么写全，要么不写/
-                    component: MyOrder
+                    component: ()=>import('@/pages/Order/Center/MyOrder')
                 },
                 {
                     name: 'grouporder',
                     path: 'grouporder',
-                    component: GroupOrder
+                    component: ()=>import('@/pages/Order/Center/GroupOrder')
                 }
             ]
         }
