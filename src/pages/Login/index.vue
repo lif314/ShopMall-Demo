@@ -81,8 +81,8 @@ export default {
   name: "Login",
   data() {
     return {
-      account: "123",
-      password: "123",
+      account: "13700000000",
+      password: "111111",
     };
   },
   methods: {

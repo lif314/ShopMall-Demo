@@ -42,6 +42,10 @@ import Register from '@/pages/Register'
 import Detail from '@/pages/Detail'
 import AddCartSuccess from '@/pages/AddCartSuccess'
 import ShopCart from '@/pages/ShopCart'
+import Trade from '@/pages/Order/Trade'
+import Center from '@/pages/Order/Center'
+import Pay from '@/pages/Order/Pay'
+import PaySuccess from '@/pages/Order/PaySuccess'
 
 
 /*
@@ -110,6 +114,15 @@ const router = new VueRouter({
             meta: {
                 isFooterShow: true
             }
+        },
+        {
+            // 支付
+            name: 'trade',
+            path: '/trade',
+            component: Trade,
+            meta:{
+                isFooterShow: true,
+            }
         }
     ],
     // 控制路由滚动条信息
@@ -140,6 +153,7 @@ router.beforeEach(async (to, from, next) => {
                 // 没有用户信息
                 try {
                     // 全局用户信息控制
+                    // 在路由跳转之前获取用户信息
                     await store.dispatch('getUserInfo')
                     // 然后放行
                     next();
