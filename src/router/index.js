@@ -132,6 +132,21 @@ const router = new VueRouter({
             meta:{
                 isFooterShow: true,
             }
+        },
+        {
+            // 支付成功页面
+            name: 'paysuccess',
+            path: '/paysuccess',
+            component: PaySuccess,
+            meta: {
+                isFooterShow: true
+            }
+        },
+        {
+            // 订单中心
+            name: 'center',
+            path: '/center',
+            component: Center,
         }
     ],
     // 控制路由滚动条信息

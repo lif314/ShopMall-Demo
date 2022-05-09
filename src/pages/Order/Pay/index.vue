@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { reqOrderPayInfo } from "@/api";
+import { reqOrderPayInfo, reqPayStatus } from "@/api";
 // 生成二维码
 import QRCode from "qrcode";
 
@@ -107,10 +107,12 @@ export default {
   data() {
     return {
       payInfo: {
-        codeUrl: 'weixin://wxpay/bizpayurl?pr=P0aPBJK',
-        orderId: 71,
+        codeUrl: "weixin://wxpay/bizpayurl?pr=P0aPBJK",
+        orderId: 10556,
         totalFee: 23996,
       },
+      timer: null,
+      code: null, // 支付状态码
     };
   },
   // 不要在生命周期函数上添加 async
@@ -144,18 +146,64 @@ export default {
     async open() {
       // 生成二维码  With async/await
       let url = await QRCode.toDataURL(this.payInfo.codeUrl);
-      this.$alert(
-        `<strong><img src='${url}' /></strong>`,
-        "微信扫码支付",
-        {
-          dangerouslyUseHTMLString: true,
-          center: true,
-          showCancelButton: true,
-          cancelButtonText: "支付遇到问题",
-        }
-      );
-      // 支付成功与失败
-      
+      this.$alert(`<strong><img src='${url}' /></strong>`, "微信扫码支付", {
+        dangerouslyUseHTMLString: true,
+        // 中间布局
+        center: true,
+        // 是否显示取消按钮
+        showCancelButton: true,
+        // 取消按钮文本内容
+        cancelButtonText: "支付遇到问题",
+        // 确定按钮文本内容
+        confirmButtonText: "已完成支付",
+        // 可以取消支付
+        // showClose: true,
+        // 关闭时回调函数
+        beforeClose: (type, instance, done) => {
+          // type区分cancel | confirm
+          // instance 当前组件实例
+          // done关闭弹出框
+          if (type == "cancel") {
+            alert("请联系管理员");
+            // 清除定时器
+            clearInterval(this.timer);
+            this.timer = null;
+            // 关闭弹出框
+            done();
+          } else {
+            // 确认按钮
+            if (this.code === 200) {
+              // 支付成功
+              // 清除定时器
+              clearInterval(this.timer);
+              this.timer = null;
+              // 保存支付成功返回的code
+              done();
+              // 跳转到支付成功页面
+              this.$router.push("/paysuccess");
+            }
+          }
+        },
+      });
+      // 支付成功与失败, 循环回调直到确定支付成功
+      if (!this.timer) {
+        this.timer = setInterval(async () => {
+          // 获取用户
+          let res = await reqPayStatus({ orderId: this.payInfo.orderId });
+          // console.log(res);
+          if (res.code == 200) {
+            // 清除定时器
+            clearInterval(this.timer);
+            this.timer = null;
+            // 保存支付成功返回的code
+            this.code = res.code;
+            // 关闭弹出框
+            this.$msgbox.close();
+            // 跳转到支付成功页面
+            this.$router.push("/paysuccess");
+          }
+        }, 1000);
+      }
     },
   },
 };
